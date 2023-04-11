@@ -2,6 +2,8 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Runtime.Remoting.Messaging;
+    using System.Text;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Refactoring;
 
@@ -19,101 +21,60 @@
         private const double RectangleWidth = 67d;
         private const double RectangleSurfaceArea = 1541d;
 
-        [TestMethod]
-        public void TriangleCalculateSurfaceArea()
+        private class ConsoleMock : IConsole
         {
-            // Arrange
-            Triangle triangle = new Triangle();
-            triangle.Height = TriangleHeight;
-            triangle.Width = TriangleWidth;
+            private readonly Queue<string> entries;
+            public List<string> Output { get; } = new List<string>();
+            public ConsoleMock(params string[] entries)
+            {
+                this.entries = new Queue<string>(entries);
+            }
 
-            // Act
-            double surfaceArea = triangle.CalculateSurfaceArea();
+            public ConsoleKeyInfo ReadKey() => default;
 
-            // Assert
-            Assert.AreEqual(TriangleSurfaceArea, surfaceArea);
+            public string ReadLine() => entries.Dequeue();
+
+            public void WriteLine(string text) => Output.Add(text);
         }
 
-        [TestMethod]
-        public void CircleCalculateSurfaceArea()
-        {
-            // Arrange
-            Circle circle = new Circle();
-            circle.Radius = CircleRadius;
-
-            // Act
-            double surfaceArea = circle.CalculateSurfaceArea();
-
-            // Assert
-            Assert.AreEqual(CircleSurfaceArea, surfaceArea);
-        }
-
-        [TestMethod]
-        public void SquareCalculateSurfaceArea()
-        {
-            // Arrange
-            Square square = new Square();
-            square.Side = SquareSide;
-
-            // Act
-            double surfaceArea = square.CalculateSurfaceArea();
-
-            // Assert
-            Assert.AreEqual(SquareSurfaceArea, surfaceArea);
-        }
-
-        [TestMethod]
-        public void RectangleCalculateSurfaceArea()
-        {
-            // Arrange
-            Rectangle rectangle = new Rectangle();
-            rectangle.Height = RectangleHeight;
-            rectangle.Width = RectangleWidth;
-
-            // Act
-            double surfaceArea = rectangle.CalculateSurfaceArea();
-
-            // Assert
-            Assert.AreEqual(RectangleSurfaceArea, surfaceArea);
-        }
 
         [TestMethod]
         public void CalculateSurfaceAreas()
         {
             // Arrange
-            Triangle triangle = new Triangle();
-            triangle.Height = TriangleHeight;
-            triangle.Width = TriangleWidth;
-
-            Circle circle = new Circle();
-            circle.Radius = CircleRadius;
-
-            Square square = new Square();
-            square.Side = SquareSide;
-
-            Rectangle rectangle = new Rectangle();
-            rectangle.Height = RectangleHeight;
-            rectangle.Width = RectangleWidth;
-
-            // TODO: Implement a new Trapezoid shape
-
-            double[] expectedSurfaceAreas = new double[] { TriangleSurfaceArea, CircleSurfaceArea, SquareSurfaceArea, RectangleSurfaceArea };
+            var console = new ConsoleMock(
+                $"create triangle {TriangleHeight} {TriangleWidth}",
+                $"create circle {CircleRadius}",
+                $"create square {SquareSide}",
+                $"create rectangle {RectangleHeight} {RectangleWidth}",
+                "calculate",
+                "print",
+                "reset",
+                "print",
+                "exit");
+            var sut = new SurfaceAreaCalculator(console);
 
             // Act
-            SurfaceAreaCalculator surfaceAreaCalculator = new SurfaceAreaCalculator();
-            surfaceAreaCalculator.Add(triangle);
-            surfaceAreaCalculator.Add(circle);
-            surfaceAreaCalculator.Add(square);
-            surfaceAreaCalculator.Add(rectangle);
-            // TODO: surfaceAreaCalculator.Add(trapezoid);
-            surfaceAreaCalculator.CalculateSurfaceAreas();
-            double[] surfaceAreas = surfaceAreaCalculator.arrSurfaceAreas;
+            sut.Start();
 
             // Assert
-            Assert.AreEqual(expectedSurfaceAreas[0], surfaceAreas[0]);
-            Assert.AreEqual(expectedSurfaceAreas[1], surfaceAreas[1]);
-            Assert.AreEqual(expectedSurfaceAreas[2], surfaceAreas[2]);
-            Assert.AreEqual(expectedSurfaceAreas[3], surfaceAreas[3]);
+            var output = console.Output;
+            Assert.AreEqual("commands:", output[0]);
+            Assert.AreEqual("- create square {double} (create a new square)", output[1]);
+            Assert.AreEqual("- create circle {double} (create a new circle)", output[2]);
+            Assert.AreEqual("- create rectangle {height} {width} (create a new rectangle)", output[3]);
+            Assert.AreEqual("- create triangle {height} {width} (create a new triangle)", output[4]);
+            Assert.AreEqual("- print (print the calculated surface areas)", output[5]);
+            Assert.AreEqual("- calculate (calulate the surface areas of the created shapes)", output[6]);
+            Assert.AreEqual("- reset (reset)", output[7]);
+            Assert.AreEqual("- exit (exit the loop)", output[8]);
+            Assert.AreEqual("Triangle created!", output[9]);
+            Assert.AreEqual("Circle created!", output[10]);
+            Assert.AreEqual("Square created!", output[11]);
+            Assert.AreEqual("Rectangle created!", output[12]);
+            Assert.AreEqual("- [0] triangle surface area is 221\r\n- [1] circle surface area is 72,26\r\n- [2] square surface area is 289\r\n- [3] rectangle surface area is 1541", output[13]);
+            Assert.AreEqual("Reset state!!", output[14]);
+            Assert.AreEqual("There are no surface areas to print", output[15]);
         }
     }
 }
