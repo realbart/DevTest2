@@ -72,7 +72,7 @@
             Assert.AreEqual("Circle created!", output[10]);
             Assert.AreEqual("Square created!", output[11]);
             Assert.AreEqual("Rectangle created!", output[12]);
-            Assert.AreEqual("- [0] triangle surface area is 221\r\n- [1] circle surface area is 72,26\r\n- [2] square surface area is 289\r\n- [3] rectangle surface area is 1541", output[13]);
+            Assert.AreEqual($"- [0] triangle surface area is {TriangleSurfaceArea}\r\n- [1] circle surface area is {CircleSurfaceArea}\r\n- [2] square surface area is {SquareSurfaceArea}\r\n- [3] rectangle surface area is {RectangleSurfaceArea}", output[13]);
             Assert.AreEqual("Reset state!!", output[14]);
             Assert.AreEqual("There are no surface areas to print", output[15]);
         }

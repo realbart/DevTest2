@@ -24,7 +24,7 @@ namespace Refactoring
                             switch (arguments[1])
                             {
                                 case "circle":
-                                    var circleSurface = Math.Round(Math.PI * double.Parse(arguments[2]), 2);
+                                    var circleSurface = Math.Round(Math.PI * Math.Pow(double.Parse(arguments[2]), 2), 2);
                                     shapes.AppendLine($"- [{shapesCount++}] circle surface area is {circleSurface}");
                                     console.WriteLine("Circle created!");
                                     continue;
@@ -48,7 +48,7 @@ namespace Refactoring
                     case "calculate":
                         continue;
                     case "print":
-                        console.WriteLine(shapesCount == 0 ? "There are no surface areas to print" : shapes.ToString().TrimEnd('\r','\n'));
+                        console.WriteLine(shapesCount == 0 ? "There are no surface areas to print" : shapes.ToString().TrimEnd('\r', '\n'));
                         continue;
                     case "reset":
                         shapesCount = 0;
