@@ -43,6 +43,11 @@ namespace Refactoring
                                     shapes.AppendLine($"- [{shapesCount++}] triangle surface area is {triangleSurface}");
                                     console.WriteLine("Triangle created!");
                                     continue;
+                                case "rhombus":
+                                    var rhombusSurface = double.Parse(arguments[2]) * double.Parse(arguments[3]);
+                                    shapes.AppendLine($"- [{shapesCount++}] rhombus surface area is {rhombusSurface}");
+                                    console.WriteLine("Rhombus created!");
+                                    continue;
                             }
                         break;
                     case "calculate":
@@ -72,6 +77,7 @@ namespace Refactoring
             console.WriteLine("- create circle {double} (create a new circle)");
             console.WriteLine("- create rectangle {height} {width} (create a new rectangle)");
             console.WriteLine("- create triangle {height} {width} (create a new triangle)");
+            console.WriteLine("- create rhombus {height} {base} (create a new rhombus)");
             console.WriteLine("- print (print the calculated surface areas)");
             console.WriteLine("- calculate (calulate the surface areas of the created shapes)");
             console.WriteLine("- reset (reset)");
