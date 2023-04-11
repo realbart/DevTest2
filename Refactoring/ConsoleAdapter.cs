@@ -2,7 +2,7 @@
 
 namespace Refactoring
 {
-    public class ConsoleWrapper : IConsole
+    public class ConsoleAdapter : IConsole
     {
         public ConsoleKeyInfo ReadKey() => Console.ReadKey();
         public string ReadLine() => Console.ReadLine();
