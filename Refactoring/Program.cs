@@ -2,7 +2,7 @@
 {
     class Program
     {
-        public static IConsole Console { get; set; } = new ConsoleWrapper();
+        public static IConsole Console { get; set; } = new ConsoleAdapter();
 
         static void Main(string[] args)
         {
