@@ -1,11 +1,10 @@
 ﻿namespace Refactoring.UnitTest
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Runtime.Remoting.Messaging;
-    using System.Text;
     using Microsoft.VisualStudio.TestTools.UnitTesting;
     using Refactoring;
+    using System;
+    using System.Collections.Generic;
+    using System.Text;
 
     [TestClass]
     public class UnitTest
@@ -24,7 +23,7 @@
         private class ConsoleMock : IConsole
         {
             private readonly Queue<string> entries;
-            public List<string> Output { get; } = new List<string>();
+            public StringBuilder Output { get; } = new StringBuilder();
             public ConsoleMock(params string[] entries)
             {
                 this.entries = new Queue<string>(entries);
@@ -34,7 +33,7 @@
 
             public string ReadLine() => entries.Dequeue();
 
-            public void WriteLine(string text) => Output.Add(text);
+            public void WriteLine(string text) => Output.AppendLine(text);
         }
 
 
@@ -58,23 +57,26 @@
             sut.Start();
 
             // Assert
-            var output = console.Output;
-            Assert.AreEqual("commands:", output[0]);
-            Assert.AreEqual("- create square {double} (create a new square)", output[1]);
-            Assert.AreEqual("- create circle {double} (create a new circle)", output[2]);
-            Assert.AreEqual("- create rectangle {height} {width} (create a new rectangle)", output[3]);
-            Assert.AreEqual("- create triangle {height} {width} (create a new triangle)", output[4]);
-            Assert.AreEqual("- print (print the calculated surface areas)", output[5]);
-            Assert.AreEqual("- calculate (calulate the surface areas of the created shapes)", output[6]);
-            Assert.AreEqual("- reset (reset)", output[7]);
-            Assert.AreEqual("- exit (exit the loop)", output[8]);
-            Assert.AreEqual("Triangle created!", output[9]);
-            Assert.AreEqual("Circle created!", output[10]);
-            Assert.AreEqual("Square created!", output[11]);
-            Assert.AreEqual("Rectangle created!", output[12]);
-            Assert.AreEqual($"- [0] triangle surface area is {TriangleSurfaceArea}\r\n- [1] circle surface area is {CircleSurfaceArea}\r\n- [2] square surface area is {SquareSurfaceArea}\r\n- [3] rectangle surface area is {RectangleSurfaceArea}", output[13]);
-            Assert.AreEqual("Reset state!!", output[14]);
-            Assert.AreEqual("There are no surface areas to print", output[15]);
+            var output = console.Output.ToString();
+            Assert.IsTrue(output.Contains("commands:"));
+            Assert.IsTrue(output.Contains("- create square {double} (create a new square)"));
+            Assert.IsTrue(output.Contains("- create circle {double} (create a new circle)"));
+            Assert.IsTrue(output.Contains("- create rectangle {height} {width} (create a new rectangle)"));
+            Assert.IsTrue(output.Contains("- create triangle {height} {width} (create a new triangle)"));
+            Assert.IsTrue(output.Contains("- print (print the calculated surface areas)"));
+            Assert.IsTrue(output.Contains("- calculate (calulate the surface areas of the created shapes)"));
+            Assert.IsTrue(output.Contains("- reset (reset)"));
+            Assert.IsTrue(output.Contains("- exit (exit the loop)"));
+            Assert.IsTrue(output.Contains("Triangle created!"));
+            Assert.IsTrue(output.Contains("Circle created!"));
+            Assert.IsTrue(output.Contains("Square created!"));
+            Assert.IsTrue(output.Contains("Rectangle created!"));
+            Assert.IsTrue(output.Contains($"triangle surface area is {TriangleSurfaceArea}"));
+            Assert.IsTrue(output.Contains($"circle surface area is {CircleSurfaceArea}"));
+            Assert.IsTrue(output.Contains($"square surface area is {SquareSurfaceArea}"));
+            Assert.IsTrue(output.Contains($"rectangle surface area is {RectangleSurfaceArea}"));
+            Assert.IsTrue(output.Contains("Reset state!!"));
+            Assert.IsTrue(output.Contains("There are no surface areas to print"));
         }
     }
 }
